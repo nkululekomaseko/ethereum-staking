@@ -69,5 +69,71 @@ describe("Staking", () => {
         contractBalance.add(transferAmount)
       );
     });
+
+    it("check initial position", async () => {
+      let position;
+
+      position = await stakingContact!.positions(0);
+
+      expect(position.positionId).to.equal(0);
+      expect(position.walletAddress).to.equal(
+        "0x0000000000000000000000000000000000000000"
+      );
+      expect(position.createdDate).to.equal(0);
+      expect(position.unlockDate).to.equal(0);
+      expect(position.percentInterest).to.equal(0);
+      expect(position.weiStaked).to.equal(0);
+      expect(position.weiInterest).to.equal(0);
+      expect(position.isOpen).to.equal(false);
+    });
+
+    it("adds a position to positions", async () => {
+      const provider = waffle.provider;
+      let position;
+      const transferAmount = ethers.utils.parseEther("1.0");
+
+      // Transfer 1 ETH: signer1 => contract
+      const data = { value: transferAmount };
+      const transaction = await stakingContact!
+        .connect(signer1!)
+        .stakeEther(90, data);
+      const receipt = await transaction.wait();
+      const block = await provider.getBlock(receipt.blockNumber);
+
+      position = await stakingContact!.positions(0);
+
+      expect(position.positionId).to.equal(0);
+      expect(position.walletAddress).to.equal(signer1?.address);
+      expect(position.createdDate).to.equal(block.timestamp);
+      expect(position.unlockDate).to.equal(block.timestamp + 24 * 60 * 60 * 90); // 24 hours/day, 60 mins/hour, 60 seconds/min, 90 days
+      expect(position.percentInterest).to.equal(1000);
+      expect(position.weiStaked).to.equal(transferAmount);
+      expect(position.weiInterest).to.equal(
+        ethers.BigNumber.from(transferAmount).mul(1000).div(10000)
+      );
+      expect(position.isOpen).to.equal(true);
+
+      expect(await stakingContact!.currentPositionId()).to.equal(1);
+    });
+
+    it("adds address and positionId to positionIdsByAddress", async () => {
+      const transferAmount = ethers.utils.parseEther("0.5");
+
+      // Transfer 0.5 ETH: signer1 => contract
+      const data = { value: transferAmount };
+      await stakingContact!.connect(signer1!).stakeEther(30, data);
+      await stakingContact!.connect(signer1!).stakeEther(30, data);
+      await stakingContact!.connect(signer2!).stakeEther(90, data);
+
+      expect(
+        await stakingContact!.positionIdsByAddress(signer1!.address, 0)
+      ).to.equal(0);
+      expect(
+        await stakingContact!.positionIdsByAddress(signer1!.address, 1)
+      ).to.equal(1);
+      expect(
+        await stakingContact!.positionIdsByAddress(signer2!.address, 0)
+      ).to.equal(2);
+    });
   });
 });
