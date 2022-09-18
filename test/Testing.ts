@@ -266,4 +266,75 @@ describe("Staking", () => {
       });
     });
   });
+
+  describe("closePosition", () => {
+    describe("after unlock date", () => {
+      it("transfers principal and interest", async () => {
+        const provider = waffle.provider;
+        let transaction;
+        let receipt;
+        let block;
+
+        const data = { value: ethers.utils.parseEther("8") };
+        transaction = await stakingContract!
+          .connect(signer2!)
+          .stakeEther(90, data);
+        receipt = await transaction.wait();
+        block = await provider.getBlock(receipt.blockNumber);
+
+        //change Unlock date to back date, so we can assume we can unlock now
+        const newUnlockDate = block.timestamp - 24 * 60 * 60 * 100;
+        await stakingContract!
+          .connect(signer1!)
+          .changeUnlockDate(0, newUnlockDate);
+
+        const position = await stakingContract!.getPositionById(0);
+
+        const signerBalanceBefore = await signer2?.getBalance();
+
+        transaction = await stakingContract!.connect(signer2!).closePosition(0);
+        receipt = await transaction.wait();
+
+        const gasUsed = receipt.gasUsed.mul(receipt.effectiveGasPrice);
+        const signerBalanceAfter = await signer2?.getBalance();
+
+        expect(signerBalanceAfter).to.equal(
+          signerBalanceBefore
+            ?.add(position.weiStaked)
+            .add(position.weiInterest)
+            .sub(gasUsed)
+        );
+      });
+    });
+
+    describe("before unlock date", () => {
+      it("transfers only principal", async () => {
+        const provider = waffle.provider;
+        let transaction;
+        let receipt;
+        let block;
+
+        const data = { value: ethers.utils.parseEther("5") };
+        transaction = await stakingContract!
+          .connect(signer2!)
+          .stakeEther(90, data);
+        receipt = await transaction.wait();
+        block = await provider.getBlock(receipt.blockNumber);
+
+        const position = await stakingContract!.getPositionById(0);
+
+        const signerBalanceBefore = await signer2?.getBalance();
+
+        transaction = await stakingContract!.connect(signer2!).closePosition(0);
+        receipt = await transaction.wait();
+
+        const gasUsed = receipt.gasUsed.mul(receipt.effectiveGasPrice);
+        const signerBalanceAfter = await signer2?.getBalance();
+
+        expect(signerBalanceAfter).to.equal(
+          signerBalanceBefore?.add(position.weiStaked).sub(gasUsed)
+        );
+      });
+    });
+  });
 });
