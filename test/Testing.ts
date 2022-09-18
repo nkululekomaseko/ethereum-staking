@@ -1,6 +1,6 @@
-import { ethers, waffle } from "hardhat";
+const { ethers, waffle } = require("hardhat");
 import { Contract } from "ethers";
-import { expect } from "chai";
+const { expect } = require("chai");
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 let stakingContract: Contract | undefined = undefined;
