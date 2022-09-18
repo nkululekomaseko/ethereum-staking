@@ -1,5 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-const { ethers } = require("hardhat");
+const { ethers, waffle } = require("hardhat");
 
 const main = async () => {
   const [signer1, signer2]: SignerWithAddress[] = await ethers.getSigners();
