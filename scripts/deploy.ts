@@ -11,9 +11,9 @@ const main = async () => {
   });
 
   console.log(
-    "Staking contract deployed to: ",
+    "Staking contract deployed\n\tContract Address:",
     stakingContract.address,
-    "by",
+    "\n\tOwner:",
     signer1.address
   );
 
