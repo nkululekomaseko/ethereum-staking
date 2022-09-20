@@ -5,6 +5,7 @@ import { useEffect, useReducer, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { SatelliteAlt } from "@mui/icons-material";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import NavBar from "../components/NavBar";
 
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -134,11 +135,13 @@ const Home: NextPage = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("State: ", state);
+  }, [state]);
+
   return (
     <>
-      <Box>
-        <Typography>Staking</Typography>
-      </Box>
+      <NavBar isConnected={isConnected()} handleConnectClick={connectAndLoad} />
     </>
   );
 };
