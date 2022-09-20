@@ -9,8 +9,8 @@ type Props = {
 const NavBar = (props: Props) => {
   return (
     <>
-      <Box>
-        <AppBar>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
           <Toolbar>
             <Typography sx={{ flexGrow: 1 }}>Ether Staking</Typography>
             <Button color="inherit" onClick={props.handleConnectClick}>

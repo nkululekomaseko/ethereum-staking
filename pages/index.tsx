@@ -2,10 +2,13 @@ import type { NextPage } from "next";
 import { BigNumberish, BytesLike, Contract, ethers, providers } from "ethers";
 import stakingArtifacts from "../client/src/artifacts/contracts/Staking.sol/Staking.json";
 import { useEffect, useReducer, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { SatelliteAlt } from "@mui/icons-material";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import NavBar from "../components/NavBar";
+import { Icon } from "@iconify/react";
+import { colors } from "@mui/material";
+import { borderRadius } from "@mui/system";
 
 const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
@@ -142,6 +145,117 @@ const Home: NextPage = () => {
   return (
     <>
       <NavBar isConnected={isConnected()} handleConnectClick={connectAndLoad} />
+      <Container maxWidth="md">
+        <Box minHeight="100vh">
+          <Stack>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              borderRadius={2}
+              mt={6}
+              sx={{ backgroundColor: colors.blue[800] }}
+            >
+              <Typography
+                variant="h3"
+                alignContent="center"
+                color="white"
+                textAlign="center"
+              >
+                <Icon icon="logos:ethereum" />
+                Ethereum Market
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <Stack
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    margin={2}
+                  >
+                    <Box
+                      borderRadius={2}
+                      padding={1}
+                      height="60px"
+                      sx={{ backgroundColor: "white" }}
+                    >
+                      <Icon
+                        height="100%"
+                        icon="ant-design:dollar-circle-outlined"
+                      />
+                    </Box>
+                    <Stack ml={1}>
+                      <Typography variant="h6" color="white">
+                        1 Month
+                      </Typography>
+                      <Typography variant="h6" color={colors.orange[500]}>
+                        7%
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Grid>
+                <Grid item xs={4}>
+                  <Stack
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    margin={2}
+                  >
+                    <Box
+                      borderRadius={2}
+                      padding={1}
+                      height="60px"
+                      sx={{ backgroundColor: "white" }}
+                    >
+                      <Icon
+                        height="100%"
+                        icon="ant-design:dollar-circle-outlined"
+                      />
+                    </Box>
+                    <Stack spacing={1}>
+                      <Typography variant="h6" color="white">
+                        3 Months
+                      </Typography>
+                      <Typography variant="h6" color={colors.orange[500]}>
+                        10%
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Grid>
+                <Grid item xs={4}>
+                  <Stack
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    margin={2}
+                  >
+                    <Box
+                      borderRadius={2}
+                      padding={1}
+                      height="60px"
+                      sx={{ backgroundColor: "white" }}
+                    >
+                      <Icon
+                        height="100%"
+                        icon="ant-design:dollar-circle-outlined"
+                      />
+                    </Box>
+                    <Stack spacing={1}>
+                      <Typography variant="h6" color="white">
+                        6 Months
+                      </Typography>
+                      <Typography variant="h6" color={colors.orange[500]}>
+                        12%
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Box>
+          </Stack>
+        </Box>
+      </Container>
     </>
   );
 };
